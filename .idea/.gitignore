@@ -1,0 +1,19 @@
+*.class
+
+*.jar
+*.war
+*.ear
+
+# Default ignored files
+# generated files
+bin/**
+gen/**
+# project based files
+.idea/
+*.iml
+*.ipr
+*.iws
+.gradletasknamecache
+.gradle/
+build/
+bin/
