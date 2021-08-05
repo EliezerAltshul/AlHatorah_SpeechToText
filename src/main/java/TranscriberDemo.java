@@ -1,29 +1,39 @@
 import edu.cmu.sphinx.api.Configuration;
+import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 import edu.cmu.sphinx.api.SpeechResult;
 import edu.cmu.sphinx.api.StreamSpeechRecognizer;
+import edu.cmu.sphinx.result.WordResult;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.Scanner;
 
 public class TranscriberDemo {
+    public static void main(String[] st) {
 
-    public static void main(String[] args) throws Exception {
+        Configuration config = new Configuration();
 
-        Configuration configuration = new Configuration();
+        config.setAcousticModelPath("resource:/edu/cmu/sphinx/models/en-us/en-us");
+        config.setDictionaryPath("src/main/java/Dictionary.dic");
+        config.setLanguageModelPath("src/main/java/LinearModel.lm");
 
-        configuration.setAcousticModelPath("resource:/edu/cmu/sphinx/models/en-us/en-us");
-        configuration.setDictionaryPath("resource:/edu/cmu/sphinx/models/en-us/cmudict-en-us.dict");
-        configuration.setLanguageModelPath("resource:/edu/cmu/sphinx/models/en-us/en-us.lm.bin");
+        try {
 
-        StreamSpeechRecognizer recognizer = new StreamSpeechRecognizer(configuration);
-        InputStream stream = new FileInputStream(new File("/Users/eliezeraltshul/Downloads/Welcome.wav"));
+            LiveSpeechRecognizer speech = new LiveSpeechRecognizer(config);
+            speech.startRecognition(true);
 
-        recognizer.startRecognition(stream);
-        SpeechResult result;
-        while ((result = recognizer.getResult()) != null) {
-            System.out.format("Hypothesis: %s\n", result.getHypothesis());
+            SpeechResult speechResult = null;
+
+            while ((speechResult = speech.getResult()) != null) {
+                String voiceCommand = speechResult.getHypothesis();
+                System.out.println("Voice Command is " + voiceCommand);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        recognizer.stopRecognition();
+
     }
 }
